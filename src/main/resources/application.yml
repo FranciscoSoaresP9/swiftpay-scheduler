@@ -11,3 +11,16 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuerUri: ${ISSUER_URI}
+
+
+aws:
+  accessKey: ${AWS_ACCESS_KEY}
+  secretAccessKey: ${AWS_SECRET_ACCESS_KEY}
+  cognito:
+    region: ${COGNITO_AWS_REGION}
+
