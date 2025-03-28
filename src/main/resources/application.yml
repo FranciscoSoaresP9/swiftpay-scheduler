@@ -11,9 +11,3 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-  flyway:
-    enabled: true
-    placeholder-replacement: false
-    baseline-on-migrate: true
-    baseline-description: 'Starting Point'
-    baseline-version: 0
