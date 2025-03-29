@@ -10,6 +10,9 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
+import static com.swiftpay.swiftpay_scheduler.constants.ApiPaths.API_PATH;
+import static com.swiftpay.swiftpay_scheduler.constants.ApiPaths.AUTH;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
@@ -21,7 +24,7 @@ public class SecurityConfiguration {
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(authz ->
                 authz
-                    .requestMatchers("/public/**").permitAll()
+                    .requestMatchers(API_PATH + AUTH +"/**").permitAll()
                     .anyRequest().authenticated()
             )
             .sessionManagement(sessionManagement ->
