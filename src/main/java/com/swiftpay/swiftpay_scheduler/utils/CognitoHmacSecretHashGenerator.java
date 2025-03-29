@@ -21,7 +21,6 @@ public class CognitoHmacSecretHashGenerator {
     @Value("${aws.cognito.clientSecret}")
     private String clientSecret;
 
-
     public String calculateSecretHash(String username) {
         var signingKey = new SecretKeySpec(clientSecret.getBytes(StandardCharsets.UTF_8), HMAC_SHA256_ALGORITHM);
 

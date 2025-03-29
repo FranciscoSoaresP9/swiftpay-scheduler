@@ -23,6 +23,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     @Override
     public RegistrationResponseDTO register(RegistrationRequestDTO write) {
         var user = userService.create(write);
+
         var cognitoUserWrite = new CognitoRegistrationRequestDTO(
                 user.getId().toString(),
                 user.getName(),
@@ -30,7 +31,9 @@ public class RegistrationServiceImpl implements RegistrationService {
         );
 
         var cognitoUser = identityProviderService.register(cognitoUserWrite);
+
         userService.patchExternalId(user.getId(), cognitoUser.id());
+
         return new RegistrationResponseDTO(
                 user.getId(),
                 user.getName(),

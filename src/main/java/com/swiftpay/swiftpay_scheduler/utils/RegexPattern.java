@@ -13,7 +13,6 @@ public class RegexPattern {
         return Pattern.compile(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?].*");
     }
 
-
     public static Pattern atLeastOneLowerCasePattern() {
         return Pattern.compile("[a-z]");
     }
