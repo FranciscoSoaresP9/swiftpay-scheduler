@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CognitoIdentityProviderService implements IdentityProviderService<CognitoRegistrationResponseDTO, CognitoRegistrationRequestDTO> {
 
-    private final AWSCognitoIdentityProvider cognitoClient;
+    private final AWSCognitoIdentityProvider identityProvider;
     private final CognitoHmacSecretHashGenerator secretHashGenerator;
 
     @Value(value = "${aws.cognito.clientId}")
@@ -27,7 +27,7 @@ public class CognitoIdentityProviderService implements IdentityProviderService<C
     public CognitoRegistrationResponseDTO register(CognitoRegistrationRequestDTO write) {
         try {
 
-            var singUpRequest = new SignUpRequest()
+            var request = new SignUpRequest()
                     .withUsername(write.username())
                     .withPassword(write.password())
                     .withSecretHash(secretHashGenerator.calculateSecretHash(write.username()))
@@ -37,9 +37,9 @@ public class CognitoIdentityProviderService implements IdentityProviderService<C
                     .withName("custom:external_id")
                     .withValue(write.externalId());
 
-            singUpRequest.withUserAttributes(userId);
+            request.withUserAttributes(userId);
 
-            var res = cognitoClient.signUp(singUpRequest);
+            var res = identityProvider.signUp(request);
 
             return new CognitoRegistrationResponseDTO(res.getUserSub());
 
