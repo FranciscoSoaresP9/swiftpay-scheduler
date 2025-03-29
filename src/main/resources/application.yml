@@ -25,5 +25,5 @@ aws:
     userPoolId: ${COGNITO_USER_POOL_ID}
     clientId: ${COGNITO_CLIENT_ID}
     clientSecret: ${COGNITO_CLIENT_SECRET}
-    region: ${COGNITO_AWS_REGION}
+    region: ${COGNITO_REGION}
 
