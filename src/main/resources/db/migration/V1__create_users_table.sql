@@ -5,8 +5,7 @@ CREATE TABLE users (
    name VARCHAR(255) NOT NULL,
    email VARCHAR(255) NOT NULL,
    external_id VARCHAR(255),
-   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-   balance DECIMAL(15, 2)
+   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 ALTER SEQUENCE user_sequence OWNED BY users.id;

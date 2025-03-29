@@ -1,4 +1,4 @@
-package com.swiftpay.swiftpay_scheduler.dto;
+package com.swiftpay.swiftpay_scheduler.dto.login;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
