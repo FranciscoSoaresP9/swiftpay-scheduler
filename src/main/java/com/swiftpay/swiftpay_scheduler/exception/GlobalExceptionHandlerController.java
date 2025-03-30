@@ -22,7 +22,6 @@ public class GlobalExceptionHandlerController {
         return new ResponseEntity<>(error, null, HttpStatus.BAD_REQUEST);
     }
 
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception ex) {
         var errorResponse = new ErrorResponse(
@@ -108,6 +107,16 @@ public class GlobalExceptionHandlerController {
         var error = new Error();
         error.setMessage(ex.getMessage());
         error.setApiError(BankAccountIbanNotFoundException.class.getSimpleName());
+        error.setTimestamp(new Date().getTime());
+        error.setStatus(HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(error, null, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BankAccountIdNotFoundException.class)
+    public ResponseEntity<Object> bankAccountIdNotFoundDate(BankAccountIdNotFoundException ex) {
+        var error = new Error();
+        error.setMessage(ex.getMessage());
+        error.setApiError(BankAccountIdNotFoundException.class.getSimpleName());
         error.setTimestamp(new Date().getTime());
         error.setStatus(HttpStatus.BAD_REQUEST.value());
         return new ResponseEntity<>(error, null, HttpStatus.BAD_REQUEST);

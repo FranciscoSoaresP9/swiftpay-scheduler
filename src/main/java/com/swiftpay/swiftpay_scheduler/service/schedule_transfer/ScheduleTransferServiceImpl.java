@@ -3,8 +3,9 @@ package com.swiftpay.swiftpay_scheduler.service.schedule_transfer;
 import com.swiftpay.swiftpay_scheduler.dto.transfer.TransferDTO;
 import com.swiftpay.swiftpay_scheduler.dto.transfer.WriteTransferDTO;
 import com.swiftpay.swiftpay_scheduler.entity.transfer.Transfer;
-import com.swiftpay.swiftpay_scheduler.entity.transfer.TransferFees;
+import com.swiftpay.swiftpay_scheduler.entity.transfer.TransferFee;
 import com.swiftpay.swiftpay_scheduler.entity.transfer.TransferStatus;
+import com.swiftpay.swiftpay_scheduler.entity.user.bank_account.BankAccount;
 import com.swiftpay.swiftpay_scheduler.service.bank_account.BankAccountService;
 import com.swiftpay.swiftpay_scheduler.service.fee.FeeCalculatorService;
 import com.swiftpay.swiftpay_scheduler.service.fee.FeeService;
@@ -13,6 +14,10 @@ import com.swiftpay.swiftpay_scheduler.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Slf4j
 @Service
@@ -26,47 +31,69 @@ public class ScheduleTransferServiceImpl implements ScheduleTransferService {
     private final UserService userService;
     private final FeeService feeService;
 
+    @Transactional
     @Override
     public TransferDTO schedule(WriteTransferDTO write) {
-        log.info("Scheduling transfer process started for amount: {} and receiver IBAN: {}", write.amount(), write.receiverIban());
-
-        validationService.validate(write);
-        log.info("Validation of transfer data completed successfully for amount: {} and receiver IBAN: {}", write.amount(), write.receiverIban());
+        log.info("Scheduling transfer for amount: {} to receiver IBAN: {}", write.amount(), write.receiverIban());
 
         var currentUserAccount = userService.getCurrentUser().getBankAccount();
         var receiverAccount = bankAccountService.findBankAccountByIban(write.receiverIban());
-        var fee = feeService.getFeeRange(write.amount(), write.scheduleDate());
+        var transferFee = getTransferFee(write.amount(), write.scheduleDate());
 
-        var appliedTax = fee.map(feeRange -> new TransferFees()
-                .withTaxPercentage(feeRange.getTaxPercentage())
-                .withFixedFee(feeRange.getFixedFee())).orElse(null);
+        var amountIncludingFees = calculateAmountIncludingFees(write.amount(), write.scheduleDate());
 
-        var amountIncludingFees = calculatorService.calculateTotalAmountWithFee(write.amount(), write.scheduleDate());
-        log.info("Total amount after applying fee: {}", amountIncludingFees);
+        var transfer = createTransfer(currentUserAccount, receiverAccount, write, transferFee, amountIncludingFees);
 
-        var transfer = new Transfer()
-                .withSenderAccount(currentUserAccount)
+
+        validationService.validate(transfer, currentUserAccount.getBalance());
+
+        transferService.create(transfer);
+        bankAccountService.debitAccountBalance(currentUserAccount.getId(), transfer.getAmountIncludingFees());
+
+        log.info("Transfer scheduled successfully for transfer ID: {}", transfer.getId());
+
+        return mapToTransferDTO(transfer);
+    }
+
+    private TransferFee getTransferFee(BigDecimal amount, LocalDate scheduleDate) {
+        return feeService.getFeeRange(amount, scheduleDate)
+                .map(feeRange -> new TransferFee()
+                        .withTaxPercentage(feeRange.getTaxPercentage())
+                        .withFixedFee(feeRange.getFixedFee()))
+                .orElse(new TransferFee()
+                        .withTaxPercentage(BigDecimal.ZERO)
+                        .withFixedFee(BigDecimal.ZERO));
+    }
+
+    private BigDecimal calculateAmountIncludingFees(BigDecimal amount, LocalDate scheduleDate) {
+        var amountIncludingFees = calculatorService.calculateTotalAmountWithFee(amount, scheduleDate);
+        log.info("Amount after applying fees: {}", amountIncludingFees);
+        return amountIncludingFees;
+    }
+
+    private Transfer createTransfer(BankAccount senderAccount,
+                                    BankAccount receiverAccount,
+                                    WriteTransferDTO write,
+                                    TransferFee transferFee,
+                                    BigDecimal amountIncludingFees) {
+        return new Transfer()
+                .withSenderAccount(senderAccount)
                 .withReceiverAccount(receiverAccount)
                 .withAmount(write.amount())
                 .withScheduleDate(write.scheduleDate())
-                .withAppliedTax(appliedTax)
+                .withAppliedFee(transferFee)
                 .withAmountIncludingFees(amountIncludingFees)
                 .withStatus(TransferStatus.PENDING);
+    }
 
-        transferService.create(transfer);
-        log.info("Transfer created: sender ID: {}, receiver ID: {}, amount: {}, total amount: {}",
-                currentUserAccount.getId(), receiverAccount.getId(), write.amount(), amountIncludingFees);
-
-        log.info("Transfer scheduling process completed successfully for transfer ID: {}", transfer.getId());
-
+    private TransferDTO mapToTransferDTO(Transfer transfer) {
         return new TransferDTO(
                 transfer.getReceiverAccount().getIban(),
                 transfer.getAmount(),
                 transfer.getScheduleDate(),
-                transfer.getAppliedTax().getTaxPercentage(),
-                transfer.getAppliedTax().getFixedFee(),
+                transfer.getAppliedFee().getTaxPercentage(),
+                transfer.getAppliedFee().getFixedFee(),
                 transfer.getAmountIncludingFees()
         );
     }
-
 }

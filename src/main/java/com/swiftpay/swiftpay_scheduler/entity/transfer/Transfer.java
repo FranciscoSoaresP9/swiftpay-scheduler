@@ -33,8 +33,12 @@ public class Transfer {
 
     private LocalDate scheduleDate;
 
-    @OneToOne(mappedBy = "transfer")
-    private TransferFees appliedTax;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "fixedFee", column = @Column(name = "applied_fixed_fee")),
+            @AttributeOverride(name = "taxPercentage", column = @Column(name = "applied_tax_percentage"))
+    })
+    private TransferFee appliedFee;
 
     private BigDecimal amountIncludingFees;
 
