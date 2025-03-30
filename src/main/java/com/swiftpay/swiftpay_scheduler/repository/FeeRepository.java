@@ -12,9 +12,10 @@ import java.util.Optional;
 public interface FeeRepository extends JpaRepository<Fee, Long> {
 
     @Query("SELECT fe FROM Fee fe " +
+            "INNER JOIN fe.feeRanges fr " +
             "WHERE :amount BETWEEN fe.minAmount AND fe.maxAmount " +
-            "AND ( (fe.feeRanges.minDays <= :numberOfDays AND fe.feeRanges.maxDays >= :numberOfDays) " +
-            "OR (fe.feeRanges.minDays <= :numberOfDays))")
+            "AND (fr.minDays <= :numberOfDays " +
+            "AND (fr.maxDays >= :numberOfDays OR fr.maxDays IS NULL))")
     Optional<Fee> findFeeByAmountAndDateRange(BigDecimal amount, long numberOfDays);
 
 }
