@@ -132,4 +132,44 @@ public class GlobalExceptionHandlerController {
         return new ResponseEntity<>(error, null, HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(TransferCancellationNotAllowedException.class)
+    public ResponseEntity<Object> transferCancellationNotAllowed(TransferCancellationNotAllowedException ex) {
+        var error = new Error();
+        error.setMessage(ex.getMessage());
+        error.setApiError(TransferCancellationNotAllowedException.class.getSimpleName());
+        error.setTimestamp(new Date().getTime());
+        error.setStatus(HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(error, null, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(TransferDeletionNotAllowedException.class)
+    public ResponseEntity<Object> transferDeletionNotAllowed(TransferDeletionNotAllowedException ex) {
+        var error = new Error();
+        error.setMessage(ex.getMessage());
+        error.setApiError(TransferDeletionNotAllowedException.class.getSimpleName());
+        error.setTimestamp(new Date().getTime());
+        error.setStatus(HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(error, null, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(TransferModificationNotAllowedException.class)
+    public ResponseEntity<Object> transferModificationNotAllowed(TransferModificationNotAllowedException ex) {
+        var error = new Error();
+        error.setMessage(ex.getMessage());
+        error.setApiError(TransferModificationNotAllowedException.class.getSimpleName());
+        error.setTimestamp(new Date().getTime());
+        error.setStatus(HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(error, null, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(TransferNotFoundException.class)
+    public ResponseEntity<Object> transferNotFound(TransferNotFoundException ex) {
+        var error = new Error();
+        error.setMessage(ex.getMessage());
+        error.setApiError(TransferNotFoundException.class.getSimpleName());
+        error.setTimestamp(new Date().getTime());
+        error.setStatus(HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(error, null, HttpStatus.BAD_REQUEST);
+    }
+
 }

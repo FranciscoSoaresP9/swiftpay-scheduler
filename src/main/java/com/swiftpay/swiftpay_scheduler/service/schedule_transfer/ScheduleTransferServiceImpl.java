@@ -6,11 +6,14 @@ import com.swiftpay.swiftpay_scheduler.entity.transfer.Transfer;
 import com.swiftpay.swiftpay_scheduler.entity.transfer.TransferFee;
 import com.swiftpay.swiftpay_scheduler.entity.transfer.TransferStatus;
 import com.swiftpay.swiftpay_scheduler.entity.user.bank_account.BankAccount;
+import com.swiftpay.swiftpay_scheduler.mapper.TransferMapper;
 import com.swiftpay.swiftpay_scheduler.service.bank_account.BankAccountService;
 import com.swiftpay.swiftpay_scheduler.service.fee.FeeCalculatorService;
 import com.swiftpay.swiftpay_scheduler.service.fee.FeeService;
 import com.swiftpay.swiftpay_scheduler.service.transfer_service.TransferService;
 import com.swiftpay.swiftpay_scheduler.service.user.UserService;
+import com.swiftpay.swiftpay_scheduler.service.validation.ScheduleTransferValidationParams;
+import com.swiftpay.swiftpay_scheduler.service.validation.ScheduleTransferValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,10 +27,11 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class ScheduleTransferServiceImpl implements ScheduleTransferService {
 
+    private final ScheduleTransferValidator validationService;
     private final FeeCalculatorService calculatorService;
-    private final ScheduleTransferValidationService validationService;
     private final BankAccountService bankAccountService;
     private final TransferService transferService;
+    private final TransferMapper transferMapper;
     private final UserService userService;
     private final FeeService feeService;
 
@@ -44,14 +48,14 @@ public class ScheduleTransferServiceImpl implements ScheduleTransferService {
 
         var transfer = createTransfer(currentUserAccount, receiverAccount, write, transferFee, amountIncludingFees);
 
-        validationService.validate(transfer, currentUserAccount.getBalance());
+        validationService.validate(new ScheduleTransferValidationParams(transfer, currentUserAccount.getBalance()));
 
         transferService.create(transfer);
         bankAccountService.debitAccountBalance(currentUserAccount.getId(), transfer.getAmountIncludingFees());
 
         log.info("Transfer scheduled successfully for transfer ID: {}", transfer.getId());
 
-        return mapToTransferDTO(transfer);
+        return  transferMapper.toDTO(transfer);
     }
 
     private TransferFee getTransferFee(BigDecimal amount, LocalDate scheduleDate) {
@@ -85,14 +89,4 @@ public class ScheduleTransferServiceImpl implements ScheduleTransferService {
                 .withStatus(TransferStatus.PENDING);
     }
 
-    private TransferDTO mapToTransferDTO(Transfer transfer) {
-        return new TransferDTO(
-                transfer.getReceiverAccount().getIban(),
-                transfer.getAmount(),
-                transfer.getScheduleDate(),
-                transfer.getAppliedFee().getTaxPercentage(),
-                transfer.getAppliedFee().getFixedFee(),
-                transfer.getAmountIncludingFees()
-        );
-    }
 }
