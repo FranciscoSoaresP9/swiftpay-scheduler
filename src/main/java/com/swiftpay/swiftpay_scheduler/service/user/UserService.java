@@ -45,12 +45,12 @@ public class UserService {
         repository.save(user);
     }
 
-    private User getUserById(Long id) {
+    public User getUserById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found"));
     }
 
-    private User getCurrentUser() {
+    public User getCurrentUser() {
         return getUserById(authService.getCurrentId());
     }
 }
