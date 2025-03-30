@@ -6,7 +6,7 @@ CREATE TABLE transfers (
     receiver_account_id BIGINT NOT NULL REFERENCES bank_accounts(id),
     amount DECIMAL(15, 2) NOT NULL,
     schedule_date DATE NOT NULL,
-    total_amount DECIMAL(15, 2),
+    amount_including_fees DECIMAL(15, 2),
     status VARCHAR(255) NOT NULL
 );
 

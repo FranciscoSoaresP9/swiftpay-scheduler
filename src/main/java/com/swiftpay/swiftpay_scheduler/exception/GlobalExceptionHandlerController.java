@@ -74,10 +74,40 @@ public class GlobalExceptionHandlerController {
     }
 
     @ExceptionHandler(InvalidBalanceException.class)
-    public ResponseEntity<Object> userNotFound(InvalidBalanceException ex) {
+    public ResponseEntity<Object> invalidBalanceException(InvalidBalanceException ex) {
         var error = new Error();
         error.setMessage(ex.getMessage());
         error.setApiError(InvalidBalanceException.class.getSimpleName());
+        error.setTimestamp(new Date().getTime());
+        error.setStatus(HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(error, null, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidTransferAmountException.class)
+    public ResponseEntity<Object> invalidTransferAmount(InvalidTransferAmountException ex) {
+        var error = new Error();
+        error.setMessage(ex.getMessage());
+        error.setApiError(InvalidTransferAmountException.class.getSimpleName());
+        error.setTimestamp(new Date().getTime());
+        error.setStatus(HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(error, null, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidTransferDateException.class)
+    public ResponseEntity<Object> invalidTransferDate(InvalidTransferDateException ex) {
+        var error = new Error();
+        error.setMessage(ex.getMessage());
+        error.setApiError(InvalidTransferDateException.class.getSimpleName());
+        error.setTimestamp(new Date().getTime());
+        error.setStatus(HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(error, null, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BankAccountIbanNotFoundException.class)
+    public ResponseEntity<Object> bankAccountIbanNotFoundDate(BankAccountIbanNotFoundException ex) {
+        var error = new Error();
+        error.setMessage(ex.getMessage());
+        error.setApiError(BankAccountIbanNotFoundException.class.getSimpleName());
         error.setTimestamp(new Date().getTime());
         error.setStatus(HttpStatus.BAD_REQUEST.value());
         return new ResponseEntity<>(error, null, HttpStatus.BAD_REQUEST);

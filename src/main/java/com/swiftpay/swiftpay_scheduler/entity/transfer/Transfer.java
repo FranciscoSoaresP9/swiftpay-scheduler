@@ -36,7 +36,7 @@ public class Transfer {
     @OneToOne(mappedBy = "transfer")
     private TransferFees appliedTax;
 
-    private BigDecimal totalAmount;
+    private BigDecimal amountIncludingFees;
 
     @Enumerated(EnumType.STRING)
     private TransferStatus status;
