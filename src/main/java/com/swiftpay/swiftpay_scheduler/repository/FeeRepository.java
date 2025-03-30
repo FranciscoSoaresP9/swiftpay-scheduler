@@ -16,4 +16,5 @@ public interface FeeRepository extends JpaRepository<Fee, Long> {
             "AND ( (fe.feeRanges.minDays <= :numberOfDays AND fe.feeRanges.maxDays >= :numberOfDays) " +
             "OR (fe.feeRanges.minDays <= :numberOfDays))")
     Optional<Fee> findFeeByAmountAndDateRange(BigDecimal amount, long numberOfDays);
+
 }
