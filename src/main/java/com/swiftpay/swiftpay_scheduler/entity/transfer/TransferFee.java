@@ -10,13 +10,8 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Getter
 @Setter
-@Entity
-public class TransferFees {
-
-    @Id
-    @OneToOne
-    @JoinColumn(name = "transfer_id")
-    private Transfer transfer;
+@Embeddable
+public class TransferFee {
 
     private BigDecimal fixedFee;
 

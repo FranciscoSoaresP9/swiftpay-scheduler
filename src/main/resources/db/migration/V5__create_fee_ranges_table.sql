@@ -4,5 +4,5 @@ CREATE TABLE fee_ranges (
     max_days INT,
     fixed_fee DECIMAL(19, 2),
     tax_percentage DECIMAL(5, 2),
-    PRIMARY KEY (fee_id, min_days, max_days)
+    PRIMARY KEY (fee_id, min_days)
 );

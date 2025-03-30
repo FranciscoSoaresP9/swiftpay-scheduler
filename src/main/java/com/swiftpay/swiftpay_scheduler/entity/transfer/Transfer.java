@@ -1,6 +1,6 @@
 package com.swiftpay.swiftpay_scheduler.entity.transfer;
 
-import com.swiftpay.swiftpay_scheduler.entity.user.User;
+import com.swiftpay.swiftpay_scheduler.entity.user.bank_account.BankAccount;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,21 +22,25 @@ public class Transfer {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sender_id")
-    private User sender;
+    @JoinColumn(name = "sender_account_id")
+    private BankAccount senderAccount;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "receiver_id")
-    private User receiver;
+    @JoinColumn(name = "receiver_account_id")
+    private BankAccount receiverAccount;
 
     private BigDecimal amount;
 
     private LocalDate scheduleDate;
 
-    @OneToOne(mappedBy = "transfer")
-    private TransferFees appliedTax;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "fixedFee", column = @Column(name = "applied_fixed_fee")),
+            @AttributeOverride(name = "taxPercentage", column = @Column(name = "applied_tax_percentage"))
+    })
+    private TransferFee appliedFee;
 
-    private BigDecimal totalAmount;
+    private BigDecimal amountIncludingFees;
 
     @Enumerated(EnumType.STRING)
     private TransferStatus status;
