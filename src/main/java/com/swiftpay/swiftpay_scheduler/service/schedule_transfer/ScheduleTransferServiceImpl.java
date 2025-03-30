@@ -44,7 +44,6 @@ public class ScheduleTransferServiceImpl implements ScheduleTransferService {
 
         var transfer = createTransfer(currentUserAccount, receiverAccount, write, transferFee, amountIncludingFees);
 
-
         validationService.validate(transfer, currentUserAccount.getBalance());
 
         transferService.create(transfer);

@@ -25,7 +25,9 @@ public class FeeServiceImpl implements FeeService {
         var fee = getFeeByAmountAndDateRange(amount, date);
         return fee.flatMap(value -> value
                 .getFeeRanges()
-                .stream().filter(el -> el.getMinDays() >= days && el.getMaxDays() <= days).findFirst());
+                .stream()
+                .filter(el -> el.getMinDays() <= days && (el.getMaxDays() == null || el.getMaxDays() >= days))
+                .findAny());
     }
 
     public Optional<Fee> getFeeByAmountAndDateRange(BigDecimal amount, LocalDate date) {

@@ -16,7 +16,8 @@ public class FeeCalculatorService implements FeeCalculator {
 
     @Override
     public BigDecimal calculateTotalAmountWithFee(BigDecimal amount, LocalDate date) {
-        return amount.add(calculateFeeForAmountOnDate(amount, date));
+        var tax = calculateFeeForAmountOnDate(amount, date);
+        return amount.add(tax).setScale(2, RoundingMode.HALF_EVEN);
     }
 
     private BigDecimal calculateFeeForAmountOnDate(BigDecimal amount, LocalDate date) {
@@ -24,9 +25,9 @@ public class FeeCalculatorService implements FeeCalculator {
         return feeRange.map(el -> {
             var taxPercentage = feeRange.get().getTaxPercentage();
             var fixedFee = feeRange.get().getFixedFee();
-            return taxPercentage
-                    .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP)
-                    .multiply(amount)
+            return (taxPercentage
+                    .divide(BigDecimal.valueOf(100))
+                    .multiply(amount))
                     .add(fixedFee);
         }).orElse(BigDecimal.ZERO);
     }

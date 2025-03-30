@@ -13,9 +13,9 @@ import java.math.BigDecimal;
 @Embeddable
 public class FeeRange {
 
-    private int minDays;
+    private Integer minDays;
 
-    private int maxDays;
+    private Integer maxDays;
 
     private BigDecimal fixedFee;
 

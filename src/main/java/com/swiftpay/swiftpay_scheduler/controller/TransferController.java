@@ -19,7 +19,7 @@ public class TransferController {
     private final ScheduleTransferService service;
 
     @PostMapping(SCHEDULE_TRANSFER)
-    public TransferDTO register(@RequestBody WriteTransferDTO write) {
+    public TransferDTO create(@RequestBody WriteTransferDTO write) {
         return service.schedule(write);
     }
 
