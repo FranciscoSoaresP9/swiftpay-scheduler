@@ -14,15 +14,15 @@ import static com.swiftpay.swiftpay_scheduler.constants.ApiPaths.BANK_ACCOUNT;
 @RequestMapping(path = API_PATH + BANK_ACCOUNT)
 public class BankAccountController {
 
-    private final BankAccountService bankAccountService;
+    private final BankAccountService service;
 
     @GetMapping
     public BankAccountDTO getCurrentUserBankAccount() {
-        return bankAccountService.getCurrentDTO();
+        return service.getCurrentDTO();
     }
 
     @PatchMapping()
     public void deposit(@RequestBody DepositDTO write) {
-        bankAccountService.deposit(write.amount());
+        service.deposit(write.amount());
     }
 }

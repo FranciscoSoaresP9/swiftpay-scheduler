@@ -1,6 +1,7 @@
 package com.swiftpay.swiftpay_scheduler.service.user;
 
 import com.swiftpay.swiftpay_scheduler.dto.registration.RegistrationRequestDTO;
+import com.swiftpay.swiftpay_scheduler.dto.user.UserDTO;
 import com.swiftpay.swiftpay_scheduler.entity.user.User;
 import com.swiftpay.swiftpay_scheduler.entity.user.bank_account.BankAccount;
 import com.swiftpay.swiftpay_scheduler.exception.UserNotFoundException;
@@ -11,6 +12,7 @@ import com.swiftpay.swiftpay_scheduler.service.validation.ValidatorType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -54,5 +56,24 @@ public class UserService {
 
     public User getCurrentUser() {
         return getUserById(authService.getCurrentId());
+    }
+
+    public UserDTO getCurrentDTO() {
+        var current = getCurrentUser();
+        return new UserDTO(
+                current.getId(),
+                current.getName(),
+                current.getEmail(),
+                current.getBankAccount().getIban()
+        );
+    }
+
+    @Transactional
+    public void patchName(String name) {
+        log.info("Updating name for current user to: {}", name);
+        var currentUser = getCurrentUser();
+        currentUser.setName(name);
+        repository.save(currentUser);
+        log.info("Successfully updated name for user ID: {} to: {}", currentUser.getId(), name);
     }
 }
