@@ -88,6 +88,8 @@ public class TransferServiceImpl implements TransferService {
     @Transactional
     @Override
     public TransferDTO update(Long id, UpdateTransferDTO write) {
+        log.info("Updating transfer ID: {}", id);
+
         var transfer = getById(id);
         var account = transfer.getSenderAccount();
         var transferFee = getTransferFee(write.amount(), write.scheduleDate());
@@ -103,12 +105,14 @@ public class TransferServiceImpl implements TransferService {
         transfer.setAmountIncludingFees(amountIncludingFees);
         transfer.setAppliedFee(transferFee);
         repository.save(transfer);
+        log.info("Successfully updated transfer ID: {}", id);
         return transferMapper.toDTO(transfer);
     }
 
     @Transactional
     @Override
     public void processTransfer(Transfer transfer) {
+        log.info("Processing transfer ID: {}", transfer.getId());
         var receiverAccount = transfer.getReceiverAccount();
         bankAccountService.deposit(receiverAccount.getId(), transfer.getAmount());
         transfer.setStatus(TransferStatus.COMPLETED);
@@ -119,20 +123,24 @@ public class TransferServiceImpl implements TransferService {
     @Transactional
     @Override
     public void cancelTransfer(Long id) {
+        log.info("Cancelling transfer ID: {}", id);
         var transfer = getById(id);
         var current = userService.getCurrentUser();
         validatorFactory.getValidator(ValidatorType.TRANSFER_CANCELLATION_VALIDATOR).validate(transfer);
         transfer.setStatus(TransferStatus.CANCELLED);
         bankAccountService.deposit(current.getBankAccount().getId(), transfer.getAmount());
         repository.save(transfer);
+        log.info("Successfully cancelled transfer ID: {}", id);
     }
 
     @Transactional
     @Override
     public void delete(Long id) {
+        log.info("Deleting transfer ID: {}", id);
         var transfer = getById(id);
         validatorFactory.getValidator(ValidatorType.TRANSFER_DELETION_SERVICE).validate(transfer);
         repository.delete(transfer);
+        log.info("Successfully deleted transfer ID: {}", id);
     }
 
     private void adjustUserAccountBalance(Transfer transfer, BigDecimal updatedAmount) {

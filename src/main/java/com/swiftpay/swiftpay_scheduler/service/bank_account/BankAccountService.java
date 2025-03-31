@@ -28,15 +28,20 @@ public class BankAccountService {
     }
 
     public void debit(Long id, BigDecimal amount) {
+        log.info("Debit {} from account ID: {}", amount, id);
         var account = findByID(id);
         account.setBalance(account.getBalance().subtract(amount));
         repository.save(account);
+        log.info("Debited {} from account ID: {}. New balance: {}", amount, id, account.getBalance());
     }
 
     public void deposit(Long id, BigDecimal amount) {
+        log.info("Deposit {} to account ID: {}", amount, id);
         var account = findByID(id);
         account.setBalance(account.getBalance().add(amount));
         repository.save(account);
+        log.info("Deposited {} to account ID: {}. New balance: {}", amount, id, account.getBalance());
+
     }
 
 }

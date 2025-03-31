@@ -34,20 +34,23 @@ public class CognitoLoginService implements LoginService {
 
     @Override
     public LoginResponseDTO login(RefreshTokenRequestDTO refreshTokenRequestDto) {
+        log.info("Login using refresh token");
         var authParams = createAuthParamsForRefreshToken(refreshTokenRequestDto.token());
         var authRequest = createAuthRequest(authParams, AuthFlowType.REFRESH_TOKEN_AUTH);
         var authResult = initiateAuthRequest(authRequest);
-
+        log.info("Login successful using refresh token");
         return buildLoginResponse(authResult, refreshTokenRequestDto.token());
     }
 
     @Override
     public LoginResponseDTO login(LoginRequestDTO loginRequestDto) {
+        log.info("Login attempt for user: {}", loginRequestDto.username());
         var authParams = createAuthParamsForLogin(loginRequestDto);
         var authRequest = createAuthRequest(authParams, AuthFlowType.ADMIN_NO_SRP_AUTH);
 
         try {
             var authResult = initiateAuthRequest(authRequest);
+            log.info("Login successful for user: {}", loginRequestDto.username());
             return buildLoginResponse(authResult);
         } catch (Exception e) {
             log.error("Authentication failed: {}", e.getMessage());

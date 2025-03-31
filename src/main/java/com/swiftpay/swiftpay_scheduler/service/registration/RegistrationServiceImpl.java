@@ -22,6 +22,8 @@ public class RegistrationServiceImpl implements RegistrationService {
     @Transactional
     @Override
     public RegistrationResponseDTO register(RegistrationRequestDTO write) {
+        log.info("Registering new user with email: {}", write.email());
+
         var user = userService.create(write);
 
         var cognitoUserWrite = new CognitoRegistrationRequestDTO(
@@ -33,6 +35,8 @@ public class RegistrationServiceImpl implements RegistrationService {
         var cognitoUser = identityProviderService.register(cognitoUserWrite);
 
         userService.patchExternalId(user.getId(), cognitoUser.id());
+
+        log.info("Registration completed successfully for user ID: {}", user.getId());
 
         return new RegistrationResponseDTO(
                 user.getId(),
