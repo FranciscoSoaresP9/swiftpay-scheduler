@@ -17,7 +17,7 @@ public class ValidatorFactory {
     public <T> Validator<T> getValidator(ValidatorType type) {
         return switch (type) {
             case TRANSFER_BALANCE_VALIDATOR -> (Validator<T>) transferBalanceValidator;
-            case SCHEDULE_TRANSFER_VALIDATOR -> (Validator<T>) scheduleTransferValidator;
+            case CREATE_TRANSFER_VALIDATOR -> (Validator<T>) scheduleTransferValidator;
             case TRANSFER_CANCELLATION_VALIDATOR -> (Validator<T>) transferCancellationValidator;
             case TRANSFER_DATE_VALIDATOR -> (Validator<T>) transferDateValidator;
             case TRANSFER_DELETION_SERVICE -> (Validator<T>) transferDeletionService;

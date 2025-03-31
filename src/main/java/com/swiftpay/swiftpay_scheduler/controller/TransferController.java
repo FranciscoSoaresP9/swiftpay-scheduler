@@ -4,8 +4,7 @@ import com.swiftpay.swiftpay_scheduler.dto.transfer.TransferDTO;
 import com.swiftpay.swiftpay_scheduler.dto.transfer.TransferSmallDTO;
 import com.swiftpay.swiftpay_scheduler.dto.transfer.UpdateTransferDTO;
 import com.swiftpay.swiftpay_scheduler.dto.transfer.WriteTransferDTO;
-import com.swiftpay.swiftpay_scheduler.service.schedule_transfer.ScheduleTransferService;
-import com.swiftpay.swiftpay_scheduler.service.transfer_service.TransferService;
+import com.swiftpay.swiftpay_scheduler.service.schedule_transfer.TransferService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +17,6 @@ import static com.swiftpay.swiftpay_scheduler.constants.ApiPaths.*;
 @RequestMapping(path = API_PATH + TRANSFER)
 public class TransferController {
 
-    private final ScheduleTransferService scheduleTransferService;
     private final TransferService transferService;
 
     @GetMapping()
@@ -34,7 +32,7 @@ public class TransferController {
 
     @PostMapping()
     public TransferDTO create(@RequestBody WriteTransferDTO write) {
-        return scheduleTransferService.schedule(write);
+        return transferService.create(write);
     }
 
     @PutMapping(ID)
@@ -48,9 +46,9 @@ public class TransferController {
         transferService.delete(id);
     }
 
-    @PatchMapping(ID)
+    @PatchMapping(ID + CANCEL)
     public void cancel(@PathVariable Long id) {
-        transferService.cancel(id);
+        transferService.cancelTransfer(id);
     }
 
 }

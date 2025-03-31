@@ -5,7 +5,8 @@ import com.swiftpay.swiftpay_scheduler.entity.transfer.TransferStatus;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public record TransferDTO(String receiverName,
+public record TransferDTO(Long id,
+                          String receiverName,
                           String receiverIban,
                           BigDecimal amount,
                           LocalDate scheduleDate,

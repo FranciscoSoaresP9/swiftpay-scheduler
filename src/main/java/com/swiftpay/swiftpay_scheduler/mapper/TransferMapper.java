@@ -10,6 +10,7 @@ public class TransferMapper {
 
     public TransferSmallDTO toSmallDTO(Transfer transfer) {
         return new TransferSmallDTO(
+                transfer.getId(),
                 transfer.getReceiverAccount().getUser().getName(),
                 transfer.getAmount(),
                 transfer.getScheduleDate(),
@@ -20,6 +21,7 @@ public class TransferMapper {
 
     public TransferDTO toDTO(Transfer transfer) {
         return new TransferDTO(
+                transfer.getId(),
                 transfer.getReceiverAccount().getUser().getName(),
                 transfer.getReceiverAccount().getIban(),
                 transfer.getAmount(),

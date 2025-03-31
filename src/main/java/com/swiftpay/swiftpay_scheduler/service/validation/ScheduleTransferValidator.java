@@ -1,15 +1,17 @@
 package com.swiftpay.swiftpay_scheduler.service.validation;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
-public class ScheduleTransferValidator implements Validator<ScheduleTransferValidationParams> {
+public class ScheduleTransferValidator implements Validator<CreateTransferValidationParams> {
 
-    private final ValidatorFactory validatorFactory;
+    @Lazy
+    @Autowired
+    private ValidatorFactory validatorFactory;
 
-    public void validate(ScheduleTransferValidationParams params) {
+    public void validate(CreateTransferValidationParams params) {
         validatorFactory
                 .getValidator(ValidatorType.TRANSFER_BALANCE_VALIDATOR)
                 .validate(new TransferBalanceValidationParams(params.transfer().getAmountIncludingFees(), params.currentBalance()));

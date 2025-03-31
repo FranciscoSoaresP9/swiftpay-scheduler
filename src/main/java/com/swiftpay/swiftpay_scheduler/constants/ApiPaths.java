@@ -7,5 +7,6 @@ public class ApiPaths {
     public static final String CONFIRM_REGISTRATION = "/confirm-registration";
     public static final String TRANSFER = "/transfers";
     public static final String ID = "/{id}";
+    public static final String CANCEL = "/cancel";
     public static final String REFRESH_TOKEN = "/refresh-token";
 }

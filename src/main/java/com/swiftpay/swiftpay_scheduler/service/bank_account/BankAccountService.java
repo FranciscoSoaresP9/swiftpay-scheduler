@@ -22,14 +22,20 @@ public class BankAccountService {
                 .orElseThrow(() -> new BankAccountIbanNotFoundException("Bank account iban not found"));
     }
 
-    public BankAccount findById(Long id) {
+    public BankAccount findByID(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new BankAccountIdNotFoundException("Bank account id not found"));
     }
 
-    public void debitAccountBalance(Long id, BigDecimal amount) {
-        var account = findById(id);
+    public void debit(Long id, BigDecimal amount) {
+        var account = findByID(id);
         account.setBalance(account.getBalance().subtract(amount));
+        repository.save(account);
+    }
+
+    public void deposit(Long id, BigDecimal amount) {
+        var account = findByID(id);
+        account.setBalance(account.getBalance().add(amount));
         repository.save(account);
     }
 

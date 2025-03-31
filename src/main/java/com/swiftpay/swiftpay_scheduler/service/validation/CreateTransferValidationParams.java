@@ -4,5 +4,5 @@ import com.swiftpay.swiftpay_scheduler.entity.transfer.Transfer;
 
 import java.math.BigDecimal;
 
-public record ScheduleTransferValidationParams(Transfer transfer, BigDecimal currentBalance) {
+public record CreateTransferValidationParams(Transfer transfer, BigDecimal currentBalance) {
 }

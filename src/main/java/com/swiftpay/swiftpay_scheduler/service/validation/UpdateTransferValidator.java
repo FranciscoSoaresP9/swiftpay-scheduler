@@ -3,14 +3,16 @@ package com.swiftpay.swiftpay_scheduler.service.validation;
 import com.swiftpay.swiftpay_scheduler.entity.transfer.Transfer;
 import com.swiftpay.swiftpay_scheduler.entity.transfer.TransferStatus;
 import com.swiftpay.swiftpay_scheduler.exception.TransferModificationNotAllowedException;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
 public class UpdateTransferValidator implements Validator<UpdateTransferValidationParams> {
 
-    private final ValidatorFactory validatorFactory;
+    @Lazy
+    @Autowired
+    private ValidatorFactory validatorFactory;
 
     public void validate(UpdateTransferValidationParams params) {
         validatorFactory
@@ -22,8 +24,8 @@ public class UpdateTransferValidator implements Validator<UpdateTransferValidati
         validateStatus(params.transfer());
     }
 
-    private void validateStatus(Transfer transfer){
-        if (transfer.getStatus().equals(TransferStatus.CANCELLED) || transfer.getStatus().equals(TransferStatus.FAILED)){
+    private void validateStatus(Transfer transfer) {
+        if (transfer.getStatus().equals(TransferStatus.CANCELLED) || transfer.getStatus().equals(TransferStatus.COMPLETED)) {
             throw new TransferModificationNotAllowedException("Updates are not allowed for transfers with status: " + transfer.getStatus());
         }
     }
