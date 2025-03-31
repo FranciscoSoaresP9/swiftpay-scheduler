@@ -14,7 +14,6 @@ import com.swiftpay.swiftpay_scheduler.repository.TransferRepository;
 import com.swiftpay.swiftpay_scheduler.service.bank_account.BankAccountService;
 import com.swiftpay.swiftpay_scheduler.service.fee.FeeCalculatorService;
 import com.swiftpay.swiftpay_scheduler.service.fee.FeeService;
-import com.swiftpay.swiftpay_scheduler.service.schedule_transfer.TransferService;
 import com.swiftpay.swiftpay_scheduler.service.user.UserService;
 import com.swiftpay.swiftpay_scheduler.service.validation.CreateTransferValidationParams;
 import com.swiftpay.swiftpay_scheduler.service.validation.UpdateTransferValidationParams;
@@ -36,30 +35,34 @@ import java.time.LocalDate;
 public class TransferServiceImpl implements TransferService {
 
     private final FeeCalculatorService calculatorService;
-    private final TransferRepository transferRepository;
+    private final TransferRepository repository;
     private final BankAccountService bankAccountService;
     private final ValidatorFactory validatorFactory;
     private final TransferMapper transferMapper;
     private final UserService userService;
     private final FeeService feeService;
 
+    @Override
     public Page<TransferSmallDTO> getAll(Pageable pageable) {
         var current = userService.getCurrentUser();
-        return transferRepository.findBySenderAccountId(current.getBankAccount().getId(), pageable)
+        return repository.findBySenderAccountId(current.getBankAccount().getId(), pageable)
                 .map(transferMapper::toSmallDTO);
     }
 
+    @Override
     public TransferDTO getDtoById(Long id) {
         return transferMapper.toDTO(getById(id));
     }
 
+    @Override
     public Transfer getById(Long id) {
         var current = userService.getCurrentUser();
-        return transferRepository.findByIdAndSenderAccountId(id, current.getBankAccount().getId())
+        return repository.findByIdAndSenderAccountId(id, current.getBankAccount().getId())
                 .orElseThrow(() -> new TransferNotFoundException("Transfer with id " + id + " not found"));
     }
 
     @Transactional
+    @Override
     public TransferDTO create(WriteTransferDTO write) {
         log.info("Scheduling transfer for amount: {} to receiver IBAN: {}", write.amount(), write.receiverIban());
 
@@ -75,14 +78,15 @@ public class TransferServiceImpl implements TransferService {
 
         bankAccountService.debit(currentUserAccount.getId(), transfer.getAmountIncludingFees());
 
-        transferRepository.save(transfer);
+        repository.save(transfer);
 
-        log.info("Transfer scheduled successfully for transfer ID: {}", transfer.getId());
+        log.info("Transfer scheduled successfully ID: {}", transfer.getId());
 
         return transferMapper.toDTO(transfer);
     }
 
     @Transactional
+    @Override
     public TransferDTO update(Long id, UpdateTransferDTO write) {
         var transfer = getById(id);
         var account = transfer.getSenderAccount();
@@ -98,25 +102,37 @@ public class TransferServiceImpl implements TransferService {
         transfer.setScheduleDate(write.scheduleDate());
         transfer.setAmountIncludingFees(amountIncludingFees);
         transfer.setAppliedFee(transferFee);
-        transferRepository.save(transfer);
+        repository.save(transfer);
         return transferMapper.toDTO(transfer);
     }
 
     @Transactional
+    @Override
+    public void processTransfer(Transfer transfer) {
+        var receiverAccount = transfer.getReceiverAccount();
+        bankAccountService.deposit(receiverAccount.getId(), transfer.getAmount());
+        transfer.setStatus(TransferStatus.COMPLETED);
+        repository.save(transfer);
+        log.info("Successfully processed transfer ID: {}", transfer.getId());
+    }
+
+    @Transactional
+    @Override
     public void cancelTransfer(Long id) {
         var transfer = getById(id);
         var current = userService.getCurrentUser();
         validatorFactory.getValidator(ValidatorType.TRANSFER_CANCELLATION_VALIDATOR).validate(transfer);
         transfer.setStatus(TransferStatus.CANCELLED);
         bankAccountService.deposit(current.getBankAccount().getId(), transfer.getAmount());
-        transferRepository.save(transfer);
+        repository.save(transfer);
     }
 
     @Transactional
+    @Override
     public void delete(Long id) {
         var transfer = getById(id);
         validatorFactory.getValidator(ValidatorType.TRANSFER_DELETION_SERVICE).validate(transfer);
-        transferRepository.delete(transfer);
+        repository.delete(transfer);
     }
 
     private void adjustUserAccountBalance(Transfer transfer, BigDecimal updatedAmount) {

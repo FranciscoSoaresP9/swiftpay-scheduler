@@ -1,4 +1,4 @@
-package com.swiftpay.swiftpay_scheduler.service.schedule_transfer;
+package com.swiftpay.swiftpay_scheduler.service.transfer_service;
 
 
 import com.swiftpay.swiftpay_scheduler.dto.transfer.TransferDTO;
@@ -18,6 +18,8 @@ public interface TransferService {
     Transfer getById(Long id);
 
     TransferDTO update(Long id, UpdateTransferDTO write);
+
+    void processTransfer(Transfer transfer);
 
     void cancelTransfer(Long id);
 

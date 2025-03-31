@@ -4,7 +4,7 @@ import com.swiftpay.swiftpay_scheduler.dto.transfer.TransferDTO;
 import com.swiftpay.swiftpay_scheduler.dto.transfer.TransferSmallDTO;
 import com.swiftpay.swiftpay_scheduler.dto.transfer.UpdateTransferDTO;
 import com.swiftpay.swiftpay_scheduler.dto.transfer.WriteTransferDTO;
-import com.swiftpay.swiftpay_scheduler.service.schedule_transfer.TransferService;
+import com.swiftpay.swiftpay_scheduler.service.transfer_service.TransferService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
