@@ -1,6 +1,7 @@
 package com.swiftpay.swiftpay_scheduler.service.validation;
 
 public enum ValidatorType {
+    CREATE_USER_VALIDATOR,
     CREATE_TRANSFER_VALIDATOR,
     TRANSFER_BALANCE_VALIDATOR,
     TRANSFER_CANCELLATION_VALIDATOR,

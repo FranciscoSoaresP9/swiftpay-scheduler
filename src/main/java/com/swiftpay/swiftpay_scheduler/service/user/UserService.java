@@ -6,6 +6,8 @@ import com.swiftpay.swiftpay_scheduler.entity.user.bank_account.BankAccount;
 import com.swiftpay.swiftpay_scheduler.exception.UserNotFoundException;
 import com.swiftpay.swiftpay_scheduler.repository.UserRepository;
 import com.swiftpay.swiftpay_scheduler.service.auth.AuthService;
+import com.swiftpay.swiftpay_scheduler.service.validation.ValidatorFactory;
+import com.swiftpay.swiftpay_scheduler.service.validation.ValidatorType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,12 +20,12 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository repository;
-    private final UserValidationService validationService;
+    private final ValidatorFactory validatorFactory;
     private final AuthService authService;
 
     public User create(RegistrationRequestDTO write) {
 
-        validationService.validateUser(write);
+        validatorFactory.getValidator(ValidatorType.CREATE_USER_VALIDATOR).validate(write);
 
         var bankAccount = new BankAccount()
                 .withBalance(write.balance())

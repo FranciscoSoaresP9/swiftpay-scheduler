@@ -6,7 +6,7 @@ import com.swiftpay.swiftpay_scheduler.exception.TransferDeletionNotAllowedExcep
 import org.springframework.stereotype.Component;
 
 @Component
-public class TransferDeletionService implements Validator<Transfer>{
+public class TransferDeletionValidator implements Validator<Transfer>{
     public void validate(Transfer transfer) {
         if(transfer.getStatus() == TransferStatus.COMPLETED) {
             throw new TransferDeletionNotAllowedException("Transfers with status '" + transfer.getStatus() + "' cannot be deleted.");

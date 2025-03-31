@@ -1,4 +1,4 @@
-package com.swiftpay.swiftpay_scheduler.service.user;
+package com.swiftpay.swiftpay_scheduler.service.validation;
 
 import com.swiftpay.swiftpay_scheduler.dto.registration.RegistrationRequestDTO;
 import com.swiftpay.swiftpay_scheduler.exception.InvalidBalanceException;
@@ -17,11 +17,11 @@ import static com.swiftpay.swiftpay_scheduler.utils.RegexPattern.*;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class UserValidationService {
+public class UserValidator implements Validator<RegistrationRequestDTO> {
 
     private final UserRepository repository;
 
-    public void validateUser(RegistrationRequestDTO write) {
+    public void validate(RegistrationRequestDTO write) {
         validateEmail(write.email());
         validatePassword(write.password());
         validateBalance(write.balance());

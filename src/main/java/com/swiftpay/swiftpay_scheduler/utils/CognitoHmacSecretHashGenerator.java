@@ -22,11 +22,11 @@ public class CognitoHmacSecretHashGenerator {
     private String clientSecret;
 
     public String calculateSecretHash(String username) {
-        var signingKey = new SecretKeySpec(clientSecret.getBytes(StandardCharsets.UTF_8), HMAC_SHA256_ALGORITHM);
+        var login = new SecretKeySpec(clientSecret.getBytes(StandardCharsets.UTF_8), HMAC_SHA256_ALGORITHM);
 
         try {
             var mac = Mac.getInstance(HMAC_SHA256_ALGORITHM);
-            mac.init(signingKey);
+            mac.init(login);
             mac.update(username.getBytes(StandardCharsets.UTF_8));
             var rawHmac = mac.doFinal(clientId.getBytes(StandardCharsets.UTF_8));
             return Base64.getEncoder().encodeToString(rawHmac);

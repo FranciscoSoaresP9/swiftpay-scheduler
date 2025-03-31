@@ -19,7 +19,7 @@ public class BankAccountService {
 
     public BankAccount findBankAccountByIban(String iban) {
         return repository.findByIban(iban)
-                .orElseThrow(() -> new BankAccountIbanNotFoundException("Bank account iban not found"));
+                .orElseThrow(() -> new BankAccountIbanNotFoundException("Bank account iban " + iban + " not found"));
     }
 
     public BankAccount findByID(Long id) {
