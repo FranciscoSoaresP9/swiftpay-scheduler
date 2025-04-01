@@ -1,29 +1,3 @@
 spring:
-  datasource:
-    url: ${DB_URL}
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    hibernate:
-      ddl-auto: validate
-    show-sql: false
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuerUri: ${ISSUER_URI}
-
-
-aws:
-  accessKey: ${AWS_ACCESS_KEY}
-  secretAccessKey: ${AWS_SECRET_ACCESS_KEY}
-  cognito:
-    userPoolId: ${COGNITO_USER_POOL_ID}
-    clientId: ${COGNITO_CLIENT_ID}
-    clientSecret: ${COGNITO_CLIENT_SECRET}
-    region: ${COGNITO_REGION}
-
+  profiles:
+    active: dev

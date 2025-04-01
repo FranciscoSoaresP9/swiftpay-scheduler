@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: postgres-db
+    environment:
+      POSTGRES_DB: swiftpay_scheduler_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - swiftpay-network
+    restart: always
+
+  app:
+    build: .
+    container_name: swiftpay-scheduler
+    depends_on:
+      - db
+    env_file:
+      - .env
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/swiftpay_scheduler_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+    ports:
+      - "8080:8080"
+    networks:
+      - swiftpay-network
+    restart: always
+
+networks:
+  swiftpay-network:
+    driver: bridge
