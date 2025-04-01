@@ -1,6 +1,7 @@
 package com.swiftpay.swiftpay_scheduler.controller;
 
 import com.swiftpay.swiftpay_scheduler.dto.user.UserDTO;
+import com.swiftpay.swiftpay_scheduler.dto.user.WriteUserDTO;
 import com.swiftpay.swiftpay_scheduler.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class UserController {
     }
 
     @PatchMapping()
-    public void patchName(@RequestBody UserDTO write) {
+    public void patchName(@RequestBody WriteUserDTO write) {
         service.patchName(write.name());
     }
 }

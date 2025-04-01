@@ -6,6 +6,8 @@ import com.swiftpay.swiftpay_scheduler.exception.BankAccountIbanNotFoundExceptio
 import com.swiftpay.swiftpay_scheduler.exception.BankAccountIdNotFoundException;
 import com.swiftpay.swiftpay_scheduler.repository.BankAccountRepository;
 import com.swiftpay.swiftpay_scheduler.service.auth.AuthService;
+import com.swiftpay.swiftpay_scheduler.service.validation.ValidatorFactory;
+import com.swiftpay.swiftpay_scheduler.service.validation.ValidatorType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ import java.math.BigDecimal;
 public class BankAccountService {
 
     private final BankAccountRepository repository;
+    private final ValidatorFactory validatorFactory;
     private final AuthService authService;
 
     public BankAccount findBankAccountByIban(String iban) {
@@ -53,6 +56,7 @@ public class BankAccountService {
     public void deposit(Long id, BigDecimal amount) {
         log.info("Deposit {} to account ID: {}", amount, id);
         var account = findByID(id);
+        validatorFactory.getValidator(ValidatorType.DEPOSIT_BALANCE_VALIDATOR).validate(amount);
         account.setBalance(account.getBalance().add(amount));
         repository.save(account);
         log.info("Deposited {} to account ID: {}. New balance: {}", amount, id, account.getBalance());

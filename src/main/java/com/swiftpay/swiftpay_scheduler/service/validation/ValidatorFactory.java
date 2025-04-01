@@ -13,6 +13,7 @@ public class ValidatorFactory {
     private final TransferDateValidator transferDateValidator;
     private final TransferDeletionValidator transferDeletionValidator;
     private final UpdateTransferValidator updateTransferValidator;
+    private final DebitAmountValidator debitAmountValidator;
     private final UserValidator userValidator;
 
     public <T> Validator<T> getValidator(ValidatorType type) {
@@ -24,6 +25,7 @@ public class ValidatorFactory {
             case TRANSFER_DATE_VALIDATOR -> (Validator<T>) transferDateValidator;
             case TRANSFER_DELETION_SERVICE -> (Validator<T>) transferDeletionValidator;
             case UPDATE_TRANSFER_VALIDATOR -> (Validator<T>) updateTransferValidator;
+            case DEPOSIT_BALANCE_VALIDATOR -> (Validator<T>) debitAmountValidator;
         };
     }
 
