@@ -25,3 +25,5 @@ aws:
     clientSecret: ${COGNITO_CLIENT_SECRET:}
     region: ${COGNITO_REGION:}
 
+server:
+  port: 5000
