@@ -1,25 +1,42 @@
-# Swiftpay Scheduler - Setup Guide  
+# Swiftpay Scheduler - Setup Guide
 
-Swiftpay Scheduler is an API designed to enable fast and secure scheduling of bank transfers. Its primary goal is to streamline payment automation, allowing users to schedule transactions for specific dates effortlessly.  
+Swiftpay Scheduler is an API designed to enable fast and secure scheduling of bank transfers. Its primary goal is to streamline payment automation, allowing users to easily create accounts, make deposits, and transfer funds between users.
 
-## Features  
+## Core Features
 
-- **Secure Authentication & Authorization**: Integrated with **AWS Cognito** to ensure robust user authentication and authorization.  
-- **Reliable Data Storage**: Uses a **PostgreSQL database** to store all scheduling information and user data securely.  
-- **Flexible Deployment**: Developed with **Spring Boot**, the API can run both locally and in **Docker containers**, ensuring easy deployment and scalability.  
+- **Account Management**: Create and manage user accounts.
+- **Deposits & Transfers**: Perform secure deposits and fund transfers between users.
+- **Secure Authentication & Authorization**: Integrated with **AWS Cognito** to ensure robust user authentication and authorization.
+- **Automated Transfer Processing: A scheduled service runs every 30 minutes to process bank transfers, ensuring timely execution of transactions.
+
+## Infrastructure & Deployment
+
+- **Reliable Data Storage**: Utilizes **AWS RDS (Relational Database Service) with PostgreSQL** to securely store all scheduling information and user data.
+- **Flexible Deployment**: Developed with **Spring Boot**, the API is hosted on **AWS Elastic Beanstalk**, using **EC2 containers** for scalability and ease of management.
+- **Local Deployment Option**: The application can also be run locally using Docker containers.
 
 ---
 
-## Getting Started  
-To run the app, you have two options: you can either run it directly on your machine using an IDE (e.g., IntelliJ IDEA) or use a Docker container. Below are the details for both methods.
+## Getting Started
 
-### Prerequisites
-Before running the application, ensure you have the following installed and configured:
+You can use the API hosted on AWS or run the project locally. To run it locally, you can use Docker or execute it directly in an IDE, such as IntelliJ IDEA.
 
-- **JDK 21** (Verify installation with `java -version`)
-- **PostgreSQL 15** installed and running
-- **Docker** (optional)
+## API Access
+
+The API is available at: [http://swiftpay-scheduler.eu-north-1.elasticbeanstalk.com](http://swiftpay-scheduler.eu-north-1.elasticbeanstalk.com)
+
+Use this endpoint to test the application's functionality.
+
+## Prerequisites
+
+Before running the application locally, make sure you have the following installed and configured:
+
+- **JDK 21** (Check the installation with `java -version`)
+- **PostgreSQL 15 or higher** (only needed for local setup)
+- **Docker** (optional for local deployment)
 - **IntelliJ IDEA** (or any IDE of your choice)
+
+
 
 ## Local Machine Setup (Using an IDE)
 
@@ -45,7 +62,7 @@ Before running the application, ensure you have the following installed and conf
      Example: `your_password`
 
 4. **Run the Application**  
-   Open the `MainApplication.java` class in your IDE and click **Run**.
+   Open the `SwiftpaySchedulerApplication.java` class in your IDE and click **Run**.
 
 ## Setup using docker
 
@@ -85,7 +102,9 @@ Before running the application, ensure you have the following installed and conf
 
 ### AWS Cognito Integration Warning
 
-Before you start using the app, please note that it is integrated with AWS Cognito. This means that if you initialize multiple databases using the same Cognito configuration, user data may fall out of sync with the API. For example, if you create a local database and then register a user with the email `user@example.com` through the API, that user is created both in your local database and in AWS's user pool. If you then delete your local database and create a new one, you won't be able to register a user with the email `user@example.com` again because, even though the user no longer exists locally, it still exists in AWS.
+Before you start using the app, please note that it is integrated with AWS Cognito. This means that if you initialize multiple databases using the same Cognito configuration, user data may fall out of sync with the API. For example, if you create a local database and then register a user with the email user@example.com through the API, that user is created both in your local database and in AWS's user pool. If you then delete your local database and create a new one, you won't be able to register a user with the email user@example.com again because, even though the user no longer exists locally, it still exists in AWS.
+
+However, please note that the user pool provided for local testing is different from the one hosted on AWS. Therefore, this issue does not apply to the AWS-hosted API.
 
 ---
 
@@ -123,7 +142,7 @@ Registers a new user and returns the account details.
 {
   "name": "John Doe",
   "email": "johndoe@example.com",
-  "password": "securePassword123",
+  "password": "securePassword@123",
   "balance": 250.00
 }
 ```
