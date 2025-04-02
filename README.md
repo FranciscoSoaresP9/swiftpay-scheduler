@@ -7,7 +7,7 @@ Swiftpay Scheduler is an API designed to enable fast and secure scheduling of ba
 - **Account Management**: Create and manage user accounts.
 - **Deposits & Transfers**: Perform secure deposits and fund transfers between users.
 - **Secure Authentication & Authorization**: Integrated with **AWS Cognito** to ensure robust user authentication and authorization.
-- **Automated Transfer Processing: A scheduled service runs every 30 minutes to process bank transfers, ensuring timely execution of transactions.
+- **Automated Transfer Processing**: A scheduled service runs every 30 minutes to process bank transfers, ensuring timely execution of transactions.
 
 ## Infrastructure & Deployment
 
